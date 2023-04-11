@@ -1,39 +1,34 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
-import { createRoot } from "react-dom/client";
-import { KetcherView } from './KetcherView'
+import KetcherView from "./KetcherView";
 
 export const VIEW_TYPE_EXAMPLE = "example-view";
 
 export class ExampleView extends ItemView {
-  constructor(leaf: WorkspaceLeaf) {
-    super(leaf);
-  }
+	constructor(leaf: WorkspaceLeaf) {
+		super(leaf);
+	}
 
-  getViewType() {
-    return VIEW_TYPE_EXAMPLE;
-  }
+	getViewType() {
+		return VIEW_TYPE_EXAMPLE;
+	}
 
-  getDisplayText() {
-    return "Example view";
-  }
+	getDisplayText() {
+		return "Example view";
+	}
 
-  async onOpen() {
-    const container = this.containerEl.children[1];
-    container.empty();
-    container.createEl("h4", { text: "Example view" });
+	async onOpen() {
+		const container = this.containerEl.children[1];
+		ReactDOM.render(
+			<React.StrictMode>
+				<KetcherView />
+			</React.StrictMode>,
+			container
+		);
+	}
 
-    const root = createRoot(this.containerEl.children[1]);
-    root.render(
-      <React.StrictMode>
-        <KetcherView />
-      </React.StrictMode>
-    );
-  }
-
-  async onClose() {
-    // Nothing to clean up.
-    ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
-  }
+	async onClose() {
+		ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
+	}
 }

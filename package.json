@@ -24,6 +24,9 @@
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
+		"ketcher-core": "^2.8.0",
+		"ketcher-react": "^2.8.0",
+		"ketcher-standalone": "^2.8.0",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2"
 	}
