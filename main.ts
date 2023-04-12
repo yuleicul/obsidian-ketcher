@@ -7,6 +7,7 @@ import {
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	addIcon,
 } from "obsidian";
 import { ExampleView, VIEW_TYPE_EXAMPLE } from "src/view";
 // Remember to rename these classes and interfaces!
@@ -27,7 +28,16 @@ export default class MyPlugin extends Plugin {
 
 		this.registerView(VIEW_TYPE_EXAMPLE, (leaf) => new ExampleView(leaf));
 
-		this.addRibbonIcon("dice", "Activate view", () => {
+		addIcon(
+			"ketcher",
+			// https://svgedit.netlify.app/editor/index.html?storagePrompt=false
+			`
+			<path fill="currentColor" clip-rule="evenodd" d="m47.75,2.91c1.93,-1.1 4.22,-1.1 6.15,0l35.56,20.84c1.93,1.1 3.07,3.12 3.07,5.32l-0.33,42.81c0,2.2 -1.15,4.22 -3.07,5.32l-35.26,20.27c-1.93,1.1 -4.22,1.1 -6.15,0l-36.21,-20.35c-1.88,-1.1 -3.03,-3.12 -3.03,-5.32l0,-43.72c0,-2.2 1.15,-4.22 3.03,-5.32l36.23,-19.86zm-31.8,27.39l0,40.24l34.88,20.1l34.83,-20.1l0,-40.24l-34.83,-20.15l-34.88,20.15z" fill-rule="evenodd" />
+     		<path fill="currentColor" d="m74.14,36.96l0,26.89l6.15,3.53l0,-34l-6.15,3.58zm-23.31,-20.56l-29.46,16.98l6.1,3.53l23.36,-13.45l0,-7.07l0,0zm-29.46,50.98l29.46,17.02l0,-7.07l-23.36,-13.49l-6.1,3.53z" />
+			`
+		);
+
+		this.addRibbonIcon("ketcher", "Ketcher", () => {
 			this.activateView();
 		});
 
