@@ -7,21 +7,29 @@ import {
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	TAbstractFile,
+	TFile,
+	TFolder,
+	Vault,
+	WorkspaceLeaf,
 	addIcon,
+	normalizePath,
 } from "obsidian";
 import { ExampleView, VIEW_TYPE_EXAMPLE } from "src/view";
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
+interface PluginSettings {
+	folder: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: "default",
+const DEFAULT_SETTINGS: PluginSettings = {
+	folder: "Ketcher",
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+const FRONTMATTER_KEY = "excalidraw-plugin";
+
+export default class ObsidianKetcher extends Plugin {
+	settings: PluginSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -38,7 +46,11 @@ export default class MyPlugin extends Plugin {
 		);
 
 		this.addRibbonIcon("ketcher", "Ketcher", () => {
-			this.activateView();
+			// this.activateView();
+			this.createAndOpenDrawing(`${Date.now()}.ket`);
+			// this.app.workspace.iterateAllLeaves((leaf) => {
+			// 	console.log(leaf.getViewState().type);
+			// });
 		});
 
 		// // This creates an icon in the left ribbon.
@@ -134,6 +146,145 @@ export default class MyPlugin extends Plugin {
 			this.app.workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE)[0]
 		);
 	}
+
+	async createAndOpenDrawing(
+		filename: string,
+		foldername?: string,
+		initData?: string
+	): Promise<string> {
+		const file = await this.createDrawing(filename, foldername, initData);
+		this.openDrawing(file, true);
+		return file.path;
+	}
+
+	async createDrawing(
+		filename: string,
+		foldername?: string,
+		initData?: string
+	): Promise<TFile> {
+		const folderpath = normalizePath(
+			foldername ? foldername : this.settings.folder
+		);
+		await this.checkAndCreateFolder(folderpath); //create folder if it does not exist
+		const fname = this.getNewUniqueFilepath(
+			this.app.vault,
+			filename,
+			folderpath
+		);
+		console.log("fname", fname);
+		const file = await this.app.vault.create(
+			fname,
+			initData ??
+				`{
+			"root": {
+				"nodes": []
+			}
+		}`
+		);
+
+		//wait for metadata cache
+		// let counter = 0;
+		// while (
+		// 	file instanceof TFile &&
+		// 	!this.isExcalidrawFile(file) &&
+		// 	counter++ < 10
+		// ) {
+		// 	await sleep(50);
+		// }
+
+		// if (counter > 10) {
+		// 	// errorlog({
+		// 	// 	file,
+		// 	// 	error: "new drawing not recognized as an excalidraw file",
+		// 	// 	fn: this.createDrawing,
+		// 	// });
+		// 	console.log(`counter > 10`);
+		// }
+
+		return file;
+	}
+
+	async checkAndCreateFolder(folderPath: string) {
+		const vault = app.vault;
+		folderPath = normalizePath(folderPath);
+		//https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/658
+		//@ts-ignore
+		const folder = vault.getAbstractFileByPathInsensitive(folderPath);
+		if (folder && folder instanceof TFolder) {
+			return;
+		}
+		if (folder && folder instanceof TFile) {
+			new Notice(
+				`The folder cannot be created because it already exists as a file: ${folderPath}.`
+			);
+		}
+		await vault.createFolder(folderPath);
+	}
+
+	getNewUniqueFilepath(
+		vault: Vault,
+		filename: string,
+		folderpath: string
+	): string {
+		let fname = normalizePath(`${folderpath}/${filename}.md`);
+		// let file: TAbstractFile = vault.getAbstractFileByPath(fname);
+		// let i = 0;
+		// const extension = filename.endsWith(".excalidraw.md")
+		// 	? ".excalidraw.md"
+		// 	: filename.slice(filename.lastIndexOf("."));
+		// while (file) {
+		// 	fname = normalizePath(
+		// 		`${folderpath}/${filename.slice(
+		// 			0,
+		// 			filename.lastIndexOf(extension)
+		// 		)}_${i}${extension}`
+		// 	);
+		// 	i++;
+		// 	file = vault.getAbstractFileByPath(fname);
+		// }
+		return fname;
+	}
+
+	public isExcalidrawFile(f: TFile) {
+		if (!f) return false;
+		if (f.extension === "excalidraw") {
+			return true;
+		}
+		const fileCache = f ? this.app.metadataCache.getFileCache(f) : null;
+		return (
+			!!fileCache?.frontmatter && !!fileCache.frontmatter[FRONTMATTER_KEY]
+		);
+	}
+
+	public openDrawing(
+		drawingFile: TFile,
+		active: boolean = false,
+		subpath?: string
+	) {
+		// if(location === "md-properties") {
+		//   location = "new-tab";
+		// }
+		let leaf: WorkspaceLeaf;
+		// if(location === "popout-window") {
+		//   leaf = app.workspace.openPopoutLeaf();
+		// }
+		// if(location === "new-tab") {
+		leaf = app.workspace.getLeaf("tab");
+		// }
+		// if(!leaf) {
+		//   leaf = this.app.workspace.getLeaf(false);
+		//   if ((leaf.view.getViewType() !== 'empty') && (location === "new-pane")) {
+		// 	leaf = getNewOrAdjacentLeaf(this, leaf)
+		//   }
+		// }
+
+		leaf.openFile(
+			drawingFile,
+			!subpath || subpath === ""
+				? { active }
+				: { active, eState: { subpath } }
+		);
+	}
 }
 
 class SampleModal extends Modal {
@@ -153,9 +304,9 @@ class SampleModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: ObsidianKetcher;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: ObsidianKetcher) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
