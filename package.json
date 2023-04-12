@@ -1,15 +1,22 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-ketcher",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "An Obsidian plugin to view or draw chemical structures and reactions using Ketcher, a web-based molecule sketcher.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"chemistry",
+		"molecule",
+		"chemical structures",
+		"chemical reactions",
+		"ketcher"
+	],
+	"author": "Yulei Chen",
+	"repository": "https://github.com/yuleicul/obsidian-ketcher",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
