@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-ketcher",
 	"version": "0.1.0",
-	"description": "An Obsidian plugin to view or draw chemical structures and reactions using Ketcher, a web-based molecule sketcher.",
+	"description": "View or draw chemical structures and reactions using Ketcher.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
