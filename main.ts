@@ -51,10 +51,6 @@ export default class ObsidianKetcher extends Plugin {
 		this.addSettingTab(new KetcherSettingTab(this.app, this));
 	}
 
-	onunload() {
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_KET);
-	}
-
 	async loadSettings() {
 		this.settings = Object.assign(
 			{},
