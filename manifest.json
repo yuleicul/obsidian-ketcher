@@ -6,6 +6,5 @@
 	"description": "An Obsidian plugin to view or draw chemical structures and reactions using Ketcher, a web-based molecule sketcher.",
 	"author": "Yulei Chen",
 	"authorUrl": "https://github.com/yuleicul",
-	"fundingUrl": "https://github.com/yuleicul",
 	"isDesktopOnly": true
 }
