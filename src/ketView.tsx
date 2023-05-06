@@ -2,25 +2,31 @@ import { Ketcher } from "ketcher-core";
 import { Notice, TextFileView } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
-import KetcherComponent from "./KetcherComponent";
+import KetcherReact from "./KetcherReact";
+
 export const VIEW_TYPE_KET = "ket-view";
 
-declare const ketcher: Ketcher;
-
 export class KetView extends TextFileView {
+	ketcher: Ketcher;
+
 	getViewData() {
 		return this.data;
 	}
 
 	// If clear is set, then it means we're opening a completely different file.
-	setViewData(data: string, clear: boolean) {
+	setViewData(data: string, _clear: boolean) {
 		this.data = data;
 
 		ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
 		const container = this.containerEl.children[1];
 		ReactDOM.render(
 			<React.StrictMode>
-				<KetcherComponent data={this.data} />
+				<KetcherReact
+					data={this.data}
+					onInit={(ketcher: Ketcher) => {
+						this.ketcher = ketcher;
+					}}
+				/>
 			</React.StrictMode>,
 			container
 		);
@@ -33,11 +39,11 @@ export class KetView extends TextFileView {
 	}
 
 	async onOpen() {
-		this.addAction("save", "Save", async (eventType) => {
+		this.addAction("save", "Save", async (_eventType) => {
 			try {
-				this.data = await ketcher.getKet();
+				this.data = await this.ketcher.getKet();
 				await this.save(); // will call `getViewData`
-				new Notice("Successful save");
+				new Notice("Your structures/reactions have been saved."); // https://stackoverflow.design/content/examples/success-messages/
 			} catch (error) {
 				new Notice(error);
 			}

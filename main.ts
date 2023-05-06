@@ -1,6 +1,4 @@
 import {
-	App,
-	Modal,
 	Notice,
 	Plugin,
 	TFile,
@@ -81,7 +79,6 @@ export default class ObsidianKetcher extends Plugin {
 		const folderPath = normalizePath(foldername || this.settings.folder);
 		await this.checkAndCreateFolder(folderPath); //create folder if it does not exist
 		const fname = normalizePath(`${folderPath}/${filename}`);
-		console.log(fname);
 		const file = await this.app.vault.create(fname, initData ?? "");
 
 		return file;
