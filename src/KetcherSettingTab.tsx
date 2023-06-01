@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import ObsidianKetcher from "../main";
+import ObsidianKetcher from "./main";
 
 export default class KetcherSettingTab extends PluginSettingTab {
 	plugin: ObsidianKetcher;
