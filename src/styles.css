@@ -1,0 +1,6 @@
+@import "ketcher-react/dist/index.css";
+
+.ketcher-container button {
+	background-color: initial;
+	box-shadow: initial;
+}
