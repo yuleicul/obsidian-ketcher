@@ -25,6 +25,9 @@ export class KetView extends TextFileView {
 					data={this.data}
 					onInit={(ketcher: Ketcher) => {
 						this.ketcher = ketcher;
+						// https://github.com/epam/ketcher/issues/2250
+						// @ts-ignore
+						global.ketcher = ketcher;
 					}}
 				/>
 			</React.StrictMode>,
