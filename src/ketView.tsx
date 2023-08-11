@@ -29,6 +29,10 @@ export class KetView extends TextFileView {
 						// @ts-ignore
 						global.ketcher = ketcher;
 					}}
+					onChange={async () => {
+						this.data = await this.ketcher.getKet();
+						this.requestSave();
+					}}
 				/>
 			</React.StrictMode>,
 			container
