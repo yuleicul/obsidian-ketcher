@@ -61,11 +61,9 @@ export class KetView extends TextFileView {
 		window.clearInterval(this.interval);
 		this.interval = window.setInterval(
 			async () => {
-				console.log('save file' + this.file.name);
 				try {
 					this.data = await this.ketcher.getKet();
 					await this.save(); // will call `getViewData`
-					console.log(this.interval)
 				} catch (error) {
 					new Notice(error);
 				}
