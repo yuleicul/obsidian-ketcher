@@ -41,6 +41,14 @@ export class KetView extends TextFileView {
 		return VIEW_TYPE_KET;
 	}
 
+	getIcon() {
+		return "ketcher";
+	}
+
+	getDisplayText() {
+		return this.file?.basename ?? "ketcher";
+	}
+
 	async onOpen() {
 		this.addAction("save", "Save", async (_eventType) => {
 			try {
