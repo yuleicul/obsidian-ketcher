@@ -8,18 +8,20 @@ const structServiceProvider = new StandaloneStructServiceProvider();
 type Props = {
 	data: string;
 	onInit: (ketcher: Ketcher) => void;
+	onChange: () => void;
 };
 
-const KetcherReact = ({ data, onInit }: Props) => {
+const KetcherReact = ({ data, onInit, onChange }: Props) => {
 	return (
 		<div className="ketcher-container">
 			<Editor
-				errorHandler={(_message: string) => {}}
+				errorHandler={(_message: string) => { }}
 				staticResourcesUrl="./"
 				structServiceProvider={structServiceProvider}
 				onInit={(ketcher: Ketcher) => {
 					ketcher.setMolecule(data);
 					onInit(ketcher);
+					ketcher.editor.subscribe('change', operations => { onChange() })
 				}}
 			/>
 		</div>

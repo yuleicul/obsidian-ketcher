@@ -30,12 +30,16 @@ export class KetView extends TextFileView {
 							// @ts-ignore
 							global.ketcher = ketcher;
 						}}
+						onChange={async () => {
+							this.data = await this.ketcher.getKet();
+							this.requestSave();
+						}}
 					/>
 				</React.StrictMode>,
 				container
 			);
 		}
-		// Update the same file in other tabs/splits after `save()` is called
+		// Updates the same file in other tabs/splits after `save()` is called
 		else {
 			this.ketcher.setMolecule(this.data);
 		}
