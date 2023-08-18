@@ -1,5 +1,5 @@
 import { Ketcher } from "ketcher-core";
-import { Notice, TFile, TextFileView } from "obsidian";
+import { Notice, TextFileView } from "obsidian";
 import React from "react";
 import ReactDOM from "react-dom";
 import KetcherReact from "./KetcherReact";
@@ -8,7 +8,6 @@ export const VIEW_TYPE_KET = "ket-view";
 
 export class KetView extends TextFileView {
 	ketcher: Ketcher;
-	interval: number;
 
 	getViewData() {
 		return this.data;
@@ -57,23 +56,6 @@ export class KetView extends TextFileView {
 		return this.file?.basename ?? "ketcher";
 	}
 
-	async onLoadFile(file: TFile) {
-		window.clearInterval(this.interval);
-		this.interval = window.setInterval(
-			async () => {
-				console.log('save file' + this.file.name);
-				try {
-					this.data = await this.ketcher.getKet();
-					await this.save(); // will call `getViewData`
-					console.log(this.interval)
-				} catch (error) {
-					new Notice(error);
-				}
-			}, 2 * 1000
-		)
-		return super.onLoadFile(file);
-	}
-
 	async onOpen() {
 		this.addAction("save", "Save", async (_eventType) => {
 			try {
@@ -88,6 +70,5 @@ export class KetView extends TextFileView {
 
 	async onClose() {
 		ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
-		window.clearInterval(this.interval)
 	}
 }
