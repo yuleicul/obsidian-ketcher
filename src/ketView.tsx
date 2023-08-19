@@ -8,6 +8,7 @@ export const VIEW_TYPE_KET = "ket-view";
 
 export class KetView extends TextFileView {
 	ketcher: Ketcher;
+	subscriber: any;
 
 	getViewData() {
 		return this.data;
@@ -18,17 +19,19 @@ export class KetView extends TextFileView {
 
 		// If clear is set, then it means we're opening a completely different file.
 		if (_clear) {
+			this.ketcher?.editor.unsubscribe("change", this.subscriber);
 			ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
 			const container = this.containerEl.children[1];
 			ReactDOM.render(
 				<React.StrictMode>
 					<KetcherReact
 						data={this.data}
-						onInit={(ketcher: Ketcher) => {
+						onInit={(ketcher: Ketcher, subscriber: any) => {
 							this.ketcher = ketcher;
 							// https://github.com/epam/ketcher/issues/2250
 							// @ts-ignore
 							global.ketcher = ketcher;
+							this.subscriber = subscriber;
 						}}
 						onChange={async () => {
 							this.data = await this.ketcher.getKet();
@@ -73,6 +76,7 @@ export class KetView extends TextFileView {
 	}
 
 	async onClose() {
+		this.ketcher.editor.unsubscribe("change", this.subscriber);
 		ReactDOM.unmountComponentAtNode(this.containerEl.children[1]);
 	}
 }
