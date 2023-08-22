@@ -1,7 +1,7 @@
 {
 	"id": "ketcher",
 	"name": "Ketcher",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"minAppVersion": "0.1.0",
 	"description": "View or draw chemical structures and reactions using Ketcher.",
 	"author": "Yulei Chen",
